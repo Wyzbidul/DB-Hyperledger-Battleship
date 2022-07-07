@@ -12,9 +12,10 @@ def _make_battleship_address(name):
 
 
 class Game:
-    def __init__(self, name, board, state, player1, player2):
+    def __init__(self, name, board_P1, board_P2, state, player1, player2):
         self.name = name
-        self.board = board
+        self.board_P1 = board_P1
+        self.board_P2 = board_P2
         self.state = state
         self.player1 = player1
         self.player2 = player2

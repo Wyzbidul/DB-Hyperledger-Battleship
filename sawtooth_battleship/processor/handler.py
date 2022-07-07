@@ -56,7 +56,8 @@ class BattleshipTransactionHandler(TransactionHandler):
 
             ## ADAPT board shape //!\\
             game = Game(name=battleship_payload.name,
-                        board="-" * 9,
+                        board_P1="-" * 100,
+                        board_P2="-" * 100,
                         state="P1-NEXT",
                         player1="",
                         player2="")
@@ -136,7 +137,7 @@ def _update_board(board, space, state):
 
 ## MODIFY win_state & _is_win /!\
 def _update_game_state(game_state, board):
-    P1_wins = _is_win(board, 'X')
+    P1_wins = _is_win(board, 'X')   #change test
     P2_wins = _is_win(board, 'O')
 
     if P1_wins and P2_wins:
@@ -148,6 +149,7 @@ def _update_game_state(game_state, board):
     if P2_wins:
         return 'P2-WIN'
 
+    ##Delete
     if '-' not in board:
         return 'TIE'
 
