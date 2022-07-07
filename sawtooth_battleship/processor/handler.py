@@ -12,6 +12,7 @@ from sawtooth_sdk.processor.exceptions import InternalError
 
 LOGGER = logging.getLogger(__name__)
 ID_BOAT = ['A', 'B', 'C', 'D', 'E']
+BOAT_CASES = [5, 4, 3, 3, 2]
 
 class BattleshipTransactionHandler(TransactionHandler):
     # Disable invalid-overridden-method. The sawtooth-sdk expects these to be
@@ -109,16 +110,12 @@ class BattleshipTransactionHandler(TransactionHandler):
 
             if game.state == "P2-NEXT":
 
-                if game.board_P1[battleship_payload.space - 1] != '-':
-                    
-                    if game.board_P1[battleship_payload.space - 1] in ID_BOAT:
-                        print('HIT/SUNK')  #TBD function to do
-                    else :
-                        raise InvalidTransaction(
-                            'Invalid Action: space {} already attacked'.format(
-                                battleship_payload))
+                if game.board_P1[battleship_payload.space - 1] == 'X' or game.board_P1[battleship_payload.space - 1] == 'O':
+                    raise InvalidTransaction(
+                        'Invalid Action: space {} already attacked'.format(
+                            battleship_payload))
                 else :
-                    print("MISS")   #TBD
+                    print("HIT/SUNK/MISS")   #TBD add X to the board
 
                 if game.player1 == '':
                     game.player1 = signer
@@ -155,12 +152,16 @@ class BattleshipTransactionHandler(TransactionHandler):
 
 ## MODIFY ACTIONS /!\
 def _update_board(board, space, state):
-    if state == 'P1-NEXT':
-        mark = 'X'
-    elif state == 'P2-NEXT':
-        mark = 'O'
-
     index = space - 1
+    if board[index] == '-':
+        print('MISS')
+        mark = 'X'
+    elif board[index] in ID_BOAT:
+        mark = 'O'
+        if BOAT_CASES[ID_BOAT.index(board[index])] == 0:
+            print('SUNK')
+        else :
+            print('HIT')
 
     # replace the index-th space with mark, leave everything else the same
     return ''.join([
