@@ -94,7 +94,7 @@ class BattleshipTransactionHandler(TransactionHandler):
                             'Invalid Action: space {} already attacked'.format(
                                 battleship_payload))
                 else :
-                    print("MISS")   #TBD
+                    print("MISS")   #TBD add X to the board
 
                 if game.player1 == '':
                     game.player1 = signer
