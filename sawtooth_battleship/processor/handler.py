@@ -150,7 +150,6 @@ class BattleshipTransactionHandler(TransactionHandler):
             raise InvalidTransaction('Unhandled action: {}'.format(
                 battleship_payload.action))
 
-## MODIFY ACTIONS /!\
 def _update_board(board, space, state):
     index = space - 1
     if board[index] == '-':
