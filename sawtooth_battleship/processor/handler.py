@@ -11,7 +11,7 @@ from sawtooth_sdk.processor.exceptions import InternalError
 
 
 LOGGER = logging.getLogger(__name__)
-ID_BOAT = [A, B, C, D, E]
+ID_BOAT = ['A', 'B', 'C', 'D', 'E']
 
 class BattleshipTransactionHandler(TransactionHandler):
     # Disable invalid-overridden-method. The sawtooth-sdk expects these to be
