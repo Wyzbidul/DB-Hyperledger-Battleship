@@ -392,7 +392,7 @@ def do_show(args):
         print("")
         print("   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 ")
         print("---|---|---|---|---|---|---|---|---|---|---")
-        print(" A | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board_enemy[0], board_enemy[1], board_enemy[2], board_enemy[3], board_enemy[4], board_enemy[5], board_enemy[6], board_enemy[7], bboard_enemyoard[8], board_enemy[9]))
+        print(" A | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board_enemy[0], board_enemy[1], board_enemy[2], board_enemy[3], board_enemy[4], board_enemy[5], board_enemy[6], board_enemy[7], board_enemy[8], board_enemy[9]))
         print("---|---|---|---|---|---|---|---|---|---|---")
         print(" B | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board_enemy[10], board_enemy[11], board_enemy[12], board_enemy[13], board_enemy[14], board_enemy[15], board_enemy[16], board_enemy[17], board_enemy[18], board_enemy[19]))
         print("---|---|---|---|---|---|---|---|---|---|---")
