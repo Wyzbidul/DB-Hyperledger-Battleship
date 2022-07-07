@@ -161,12 +161,12 @@ def _update_board(board, space, state):
             id = 1
         else :
             id = 0
-        if BOAT_CASES[id][ID_BOAT.index(board[index])] == 0:
+        if BOAT_CASES[id][ID_BOAT.index(board[index])] == 1:
             print('SUNK')
         else :
             print('HIT')
 
-        # Update boat cases left status
+        # Update boat cases left status for hit or sunk boat
         BOAT_CASES[id][ID_BOAT.index(board[index])] -= 1
 
     # replace the index-th space with mark, leave everything else the same
