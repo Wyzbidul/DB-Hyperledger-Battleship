@@ -85,16 +85,12 @@ class BattleshipTransactionHandler(TransactionHandler):
             
             if game.state == "P1-NEXT":
 
-                if game.board_P2[battleship_payload.space - 1] != '-':
-                    
-                    if game.board_P2[battleship_payload.space - 1] in ID_BOAT:
-                        print('HIT/SUNK')  #TBD function to do
-                    else :
-                        raise InvalidTransaction(
-                            'Invalid Action: space {} already attacked'.format(
-                                battleship_payload))
+                if game.board_P2[battleship_payload.space - 1] == 'X' or game.board_P2[battleship_payload.space - 1] == 'O':
+                    raise InvalidTransaction(
+                        'Invalid Action: space {} already attacked'.format(
+                            battleship_payload))
                 else :
-                    print("MISS")   #TBD add X to the board
+                    print("HIT/SUNK/MISS")   #TBD add X to the board
 
                 if game.player1 == '':
                     game.player1 = signer
