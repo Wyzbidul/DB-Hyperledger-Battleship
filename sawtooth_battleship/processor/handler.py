@@ -136,16 +136,16 @@ def _update_board(board, space, state):
 
 ## MODIFY win_state & _is_win /!\
 def _update_game_state(game_state, board):
-    x_wins = _is_win(board, 'X')
-    o_wins = _is_win(board, 'O')
+    P1_wins = _is_win(board, 'X')
+    P2_wins = _is_win(board, 'O')
 
-    if x_wins and o_wins:
+    if P1_wins and P2_wins:
         raise InternalError('Two winners (there can be only one)')
 
-    if x_wins:
+    if P1_wins:
         return 'P1-WIN'
 
-    if o_wins:
+    if P2_wins:
         return 'P2-WIN'
 
     if '-' not in board:
@@ -162,7 +162,7 @@ def _update_game_state(game_state, board):
 
     raise InternalError('Unhandled state: {}'.format(game_state))
 
-## MODIFY /!\
+## MODIFY /!\ Check le nb de bateau restant
 def _is_win(board, letter):
     wins = ((1, 2, 3), (4, 5, 6), (7, 8, 9),
             (1, 4, 7), (2, 5, 8), (3, 6, 9),
