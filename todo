@@ -1,1 +1,5 @@
-check every instance of board to adapt to board owner
+Check every instance of board to adapt to board owner (board --> board_P1 / board_P2)
+Decide value of board for display depending on player (if state == 'Px-NEXT')
+When player plays, update board, to modify on enemy board
+Write function miss or sunk
+Check every file for logical error with changes made
