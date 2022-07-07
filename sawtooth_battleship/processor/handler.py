@@ -220,7 +220,7 @@ def _game_data_to_str(board, game_state, player1, player2, name):
     out += "---|---|---|---|---|---|---|---|---|---|---"
     out += " B | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[10], board[11], board[12], board[13], board[14], board[15], board[16], board[17], board[18], board[19])
     out += "---|---|---|---|---|---|---|---|---|---|---"
-    out += " C | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[20], board[21], board[22], board[23], board[24], board[25], board[26], boardy[27], board[28], board[29])
+    out += " C | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[20], board[21], board[22], board[23], board[24], board[25], board[26], board[27], board[28], board[29])
     out += "---|---|---|---|---|---|---|---|---|---|---"
     out += " D | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[30], board[31], board[32], board[33], board[34], board[35], board[36], board[37], board[38], board[39])
     out += "---|---|---|---|---|---|---|---|---|---|---"
