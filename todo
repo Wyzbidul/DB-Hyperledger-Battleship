@@ -2,4 +2,5 @@ Check every instance of board to adapt to board owner (board --> board_P1 / boar
 Decide value of board for display depending on player (if state == 'Px-NEXT')
 When player plays, update board, to modify on enemy board
 Write function miss or sunk
+add global counter for boat left for each player to adapt _is_win function
 Check every file for logical error with changes made
