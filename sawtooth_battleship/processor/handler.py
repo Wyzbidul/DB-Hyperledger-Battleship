@@ -214,11 +214,28 @@ def _game_data_to_str(board, game_state, player1, player2, name):
     out += "PLAYER 2: {}\n".format(player2[:6])
     out += "STATE: {}\n".format(game_state)
     out += "\n"
-    out += "{} | {} | {}\n".format(board[0], board[1], board[2])
-    out += "---|---|---\n"
-    out += "{} | {} | {}\n".format(board[3], board[4], board[5])
-    out += "---|---|---\n"
-    out += "{} | {} | {}".format(board[6], board[7], board[8])
+    out += "   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 "
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " A | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[0], board[1], board[2], board[3], board[4], board[5], board[6], board[7], board[8], board[9])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " B | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[10], board[11], board[12], board[13], board[14], board[15], board[16], board[17], board[18], board[19])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " C | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[20], board[21], board[22], board[23], board[24], board[25], board[26], boardy[27], board[28], board[29])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " D | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[30], board[31], board[32], board[33], board[34], board[35], board[36], board[37], board[38], board[39])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " E | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[40], board[41], board[42], board[43], board[44], board[45], board[46], board[47], board[48], board[49])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " F | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[50], board[51], board[52], board[53], board[54], board[55], board[56], board[57], board[58], board[59])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " G | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[60], board[61], board[62], board[63], board[64], board[65], board[66], board[67], board[68], board[69])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " H | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[70], board[71], board[72], board[73], board[74], board[75], board[76], board[77], board[78], board[79])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " I | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[80], board[81], board[82], board[83], board[84], board[85], board[86], board[87], board[88], board[89])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " J | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[90], board[91], board[92], board[93], board[94], board[95], board[96], board[97], board[98], board[99])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
     return out
 
 
