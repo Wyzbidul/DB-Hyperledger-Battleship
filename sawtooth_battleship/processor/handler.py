@@ -12,7 +12,7 @@ from sawtooth_sdk.processor.exceptions import InternalError
 
 LOGGER = logging.getLogger(__name__)
 ID_BOAT = ['A', 'B', 'C', 'D', 'E']
-BOAT_CASES = [5, 4, 3, 3, 2]
+BOAT_CASES = [[5, 4, 3, 3, 2],[5, 4, 3, 3, 2]]
 
 class BattleshipTransactionHandler(TransactionHandler):
     # Disable invalid-overridden-method. The sawtooth-sdk expects these to be
@@ -157,7 +157,11 @@ def _update_board(board, space, state):
         mark = 'X'
     elif board[index] in ID_BOAT:
         mark = 'O'
-        if BOAT_CASES[ID_BOAT.index(board[index])] == 0:
+        if state == 'P1-NEXT' :
+            id = 1
+        else :
+            id = 0
+        if BOAT_CASES[id][ID_BOAT.index(board[index])] == 0:
             print('SUNK')
         else :
             print('HIT')
@@ -170,8 +174,8 @@ def _update_board(board, space, state):
 
 ## MODIFY win_state & _is_win /!\
 def _update_game_state(game_state, board):
-    P1_wins = _is_win(board, 'X')   #change test
-    P2_wins = _is_win(board, 'O')
+    P1_wins = _is_win(0)
+    P2_wins = _is_win(1)
 
     if P1_wins and P2_wins:
         raise InternalError('Two winners (there can be only one)')
@@ -182,33 +186,23 @@ def _update_game_state(game_state, board):
     if P2_wins:
         return 'P2-WIN'
 
-    ##Delete
-    if '-' not in board:
-        return 'TIE'
-
     if game_state == 'P1-NEXT':
         return 'P2-NEXT'
 
     if game_state == 'P2-NEXT':
         return 'P1-NEXT'
 
-    if game_state in ('P1-WINS', 'P2-WINS', 'TIE'):
+    if game_state in ('P1-WINS', 'P2-WINS'):
         return game_state
 
     raise InternalError('Unhandled state: {}'.format(game_state))
 
 ## MODIFY /!\ Check le nb de bateau restant
-def _is_win(board, letter):
-    wins = ((1, 2, 3), (4, 5, 6), (7, 8, 9),
-            (1, 4, 7), (2, 5, 8), (3, 6, 9),
-            (1, 5, 9), (3, 5, 7))
-
-    for win in wins:
-        if (board[win[0] - 1] == letter
-                and board[win[1] - 1] == letter
-                and board[win[2] - 1] == letter):
-            return True
-    return False
+def _is_win(id):
+    for k in BOAT_CASES[id]:
+        if k != 0:
+            return False
+    return True
 
 ## MODIFY BOARD LAYOUT /!\
 def _game_data_to_str(board, game_state, player1, player2, name):
