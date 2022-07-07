@@ -166,6 +166,9 @@ def _update_board(board, space, state):
         else :
             print('HIT')
 
+        # Update boat cases left status
+        BOAT_CASES[id][ID_BOAT.index(board[index])] -= 1
+
     # replace the index-th space with mark, leave everything else the same
     return ''.join([
         current if square != index else mark
