@@ -103,7 +103,7 @@ class BattleshipTransactionHandler(TransactionHandler):
                                         battleship_payload.space,
                                         game.state)
 
-                upd_game_state = _update_game_state(game.state, upd_board)
+                upd_game_state = _update_game_state(game.state)
 
                 game.board_P2 = upd_board
                 game.state = upd_game_state
@@ -127,7 +127,7 @@ class BattleshipTransactionHandler(TransactionHandler):
                                         battleship_payload.space,
                                         game.state)
 
-                upd_game_state = _update_game_state(game.state, upd_board)
+                upd_game_state = _update_game_state(game.state)
 
                 game.board_P1 = upd_board
                 game.state = upd_game_state
@@ -172,8 +172,7 @@ def _update_board(board, space, state):
         for square, current in enumerate(board)
     ])
 
-## MODIFY win_state & _is_win /!\
-def _update_game_state(game_state, board):
+def _update_game_state(game_state):
     P1_wins = _is_win(0)
     P2_wins = _is_win(1)
 
@@ -197,7 +196,6 @@ def _update_game_state(game_state, board):
 
     raise InternalError('Unhandled state: {}'.format(game_state))
 
-## MODIFY /!\ Check le nb de bateau restant
 def _is_win(id):
     for k in BOAT_CASES[id]:
         if k != 0:
