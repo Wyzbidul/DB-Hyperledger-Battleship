@@ -11,7 +11,7 @@ from sawtooth_sdk.processor.exceptions import InternalError
 
 
 LOGGER = logging.getLogger(__name__)
-
+ID_BOAT = [A, B, C, D, E]
 
 class BattleshipTransactionHandler(TransactionHandler):
     # Disable invalid-overridden-method. The sawtooth-sdk expects these to be
@@ -82,35 +82,72 @@ class BattleshipTransactionHandler(TransactionHandler):
                      and game.player2 != signer):
                 raise InvalidTransaction(
                     "Not this player's turn: {}".format(signer[:6]))
+            
+            if game.state == "P1-NEXT":
 
-            if game.board[battleship_payload.space - 1] != '-':
-                raise InvalidTransaction(
-                    'Invalid Action: space {} already taken'.format(
-                        battleship_payload))
+                if game.board_P2[battleship_payload.space - 1] != '-':
+                    
+                    if game.board_P2[battleship_payload.space - 1] in ID_BOAT:
+                        print('HIT/SUNK')  #TBD function to do
+                    else :
+                        raise InvalidTransaction(
+                            'Invalid Action: space {} already attacked'.format(
+                                battleship_payload))
+                else :
+                    print("MISS")   #TBD
 
-            if game.player1 == '':
-                game.player1 = signer
+                if game.player1 == '':
+                    game.player1 = signer
 
-            elif game.player2 == '':
-                game.player2 = signer
+                elif game.player2 == '':
+                    game.player2 = signer
 
-            upd_board = _update_board(game.board,
-                                      battleship_payload.space,
-                                      game.state)
+                upd_board = _update_board(game.board_P2,
+                                        battleship_payload.space,
+                                        game.state)
 
-            upd_game_state = _update_game_state(game.state, upd_board)
+                upd_game_state = _update_game_state(game.state, upd_board)
 
-            game.board = upd_board
-            game.state = upd_game_state
+                game.board_P2 = upd_board
+                game.state = upd_game_state
 
-            ## ADAPT /!\
+            if game.state == "P2-NEXT":
+
+                if game.board_P1[battleship_payload.space - 1] != '-':
+                    
+                    if game.board_P1[battleship_payload.space - 1] in ID_BOAT:
+                        print('HIT/SUNK')  #TBD function to do
+                    else :
+                        raise InvalidTransaction(
+                            'Invalid Action: space {} already attacked'.format(
+                                battleship_payload))
+                else :
+                    print("MISS")   #TBD
+
+                if game.player1 == '':
+                    game.player1 = signer
+
+                elif game.player2 == '':
+                    game.player2 = signer
+
+                upd_board = _update_board(game.board_P1,
+                                        battleship_payload.space,
+                                        game.state)
+
+                upd_game_state = _update_game_state(game.state, upd_board)
+
+                game.board_P1 = upd_board
+                game.state = upd_game_state
+
+
             battleship_state.set_game(battleship_payload.name, game)
             _display(
                 "Player {} attacks space: {}\n\n".format(
                     signer[:6],
                     battleship_payload.space)
                 + _game_data_to_str(
-                    game.board,
+                    game.board_P1,
+                    game.board_P2,
                     game.state,
                     game.player1,
                     game.player2,
