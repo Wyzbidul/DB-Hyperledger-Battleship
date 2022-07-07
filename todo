@@ -1,3 +1,5 @@
+Check "error in test" for display board
+Change board layout in handler (_game_data_to_str)
 When player plays, update board, to modify on enemy board
 Modify battleship_payload.py to take in position differently
 Check every file for logical error with changes made
