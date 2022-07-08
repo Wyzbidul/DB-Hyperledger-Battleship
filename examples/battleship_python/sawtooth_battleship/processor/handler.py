@@ -11,7 +11,8 @@ from sawtooth_sdk.processor.exceptions import InternalError
 
 
 LOGGER = logging.getLogger(__name__)
-
+ID_BOAT = ['A', 'B', 'C', 'D', 'E']
+BOAT_CASES = [[5, 4, 3, 3, 2],[5, 4, 3, 3, 2]]
 
 class BattleshipTransactionHandler(TransactionHandler):
     # Disable invalid-overridden-method. The sawtooth-sdk expects these to be
@@ -56,23 +57,31 @@ class BattleshipTransactionHandler(TransactionHandler):
 
             ## ADAPT board shape //!\\
             game = Game(name=battleship_payload.name,
-                        board="-" * 9,
+                        board_P1="-" * 100,
+                        board_P2="-" * 100,
                         state="P1-NEXT",
                         player1="",
                         player2="")
 
             battleship_state.set_game(battleship_payload.name, game)
             _display("Player {} created a game.".format(signer[:6]))
+        
+        elif battleship_payload.action == 'show': 
+            game = battleship_state.get_game(battleship_payload.name)
 
-        elif battleship_payload.action == 'take':
+            if game.player1 == '' or game.player2 == '':
+                raise InvalidTransaction(
+                    'Invalid action: show requires two existing players')
+
+        elif battleship_payload.action == 'shoot':
             game = battleship_state.get_game(battleship_payload.name)
 
             if game is None:
                 raise InvalidTransaction(
-                    'Invalid action: Take requires an existing game')
+                    'Invalid action: shoot requires an existing game')
 
             ## ADAPT to battleship game state
-            if game.state in ('P1-WIN', 'P2-WIN', 'TIE'):
+            if game.state in ('P1-WIN', 'P2-WIN'):
                 raise InvalidTransaction('Invalid Action: Game has ended')
 
             if (game.player1 and game.state == 'P1-NEXT'
@@ -81,35 +90,64 @@ class BattleshipTransactionHandler(TransactionHandler):
                      and game.player2 != signer):
                 raise InvalidTransaction(
                     "Not this player's turn: {}".format(signer[:6]))
+            
+            if game.state == "P1-NEXT":
 
-            if game.board[battleship_payload.space - 1] != '-':
-                raise InvalidTransaction(
-                    'Invalid Action: space {} already taken'.format(
-                        battleship_payload))
+                if game.board_P2[battleship_payload.space - 1] == 'X' or game.board_P2[battleship_payload.space - 1] == 'O':
+                    raise InvalidTransaction(
+                        'Invalid Action: space {} already attacked'.format(
+                            battleship_payload))
+                else :
+                    print("HIT/SUNK/MISS")   #TBD add X to the board
 
-            if game.player1 == '':
-                game.player1 = signer
+                if game.player1 == '':
+                    game.player1 = signer
 
-            elif game.player2 == '':
-                game.player2 = signer
+                elif game.player2 == '':
+                    game.player2 = signer
 
-            upd_board = _update_board(game.board,
-                                      battleship_payload.space,
-                                      game.state)
+                upd_board = _update_board(game.board_P2,
+                                        battleship_payload.space,
+                                        game.state)
 
-            upd_game_state = _update_game_state(game.state, upd_board)
+                upd_game_state = _update_game_state(game.state)
 
-            game.board = upd_board
-            game.state = upd_game_state
+                game.board_P2 = upd_board
+                game.state = upd_game_state
 
-            ## ADAPT /!\
+            if game.state == "P2-NEXT":
+
+                if game.board_P1[battleship_payload.space - 1] == 'X' or game.board_P1[battleship_payload.space - 1] == 'O':
+                    raise InvalidTransaction(
+                        'Invalid Action: space {} already attacked'.format(
+                            battleship_payload))
+                else :
+                    print("HIT/SUNK/MISS")   #TBD add X to the board
+
+                if game.player1 == '':
+                    game.player1 = signer
+
+                elif game.player2 == '':
+                    game.player2 = signer
+
+                upd_board = _update_board(game.board_P1,
+                                        battleship_payload.space,
+                                        game.state)
+
+                upd_game_state = _update_game_state(game.state)
+
+                game.board_P1 = upd_board
+                game.state = upd_game_state
+
+
             battleship_state.set_game(battleship_payload.name, game)
             _display(
                 "Player {} attacks space: {}\n\n".format(
                     signer[:6],
                     battleship_payload.space)
                 + _game_data_to_str(
-                    game.board,
+                    game.board_P1,
+                    game.board_P2,
                     game.state,
                     game.player1,
                     game.player2,
@@ -119,14 +157,24 @@ class BattleshipTransactionHandler(TransactionHandler):
             raise InvalidTransaction('Unhandled action: {}'.format(
                 battleship_payload.action))
 
-## MODIFY ACTIONS /!\
 def _update_board(board, space, state):
-    if state == 'P1-NEXT':
-        mark = 'X'
-    elif state == 'P2-NEXT':
-        mark = 'O'
-
     index = space - 1
+    if board[index] == '-':
+        print('MISS')
+        mark = 'X'
+    elif board[index] in ID_BOAT:
+        mark = 'O'
+        if state == 'P1-NEXT' :
+            id = 1
+        else :
+            id = 0
+        if BOAT_CASES[id][ID_BOAT.index(board[index])] == 1:
+            print('SUNK')
+        else :
+            print('HIT')
+
+        # Update boat cases left status for hit or sunk boat
+        BOAT_CASES[id][ID_BOAT.index(board[index])] -= 1
 
     # replace the index-th space with mark, leave everything else the same
     return ''.join([
@@ -134,22 +182,18 @@ def _update_board(board, space, state):
         for square, current in enumerate(board)
     ])
 
-## MODIFY win_state & _is_win /!\
-def _update_game_state(game_state, board):
-    x_wins = _is_win(board, 'X')
-    o_wins = _is_win(board, 'O')
+def _update_game_state(game_state):
+    P1_wins = _is_win(0)
+    P2_wins = _is_win(1)
 
-    if x_wins and o_wins:
+    if P1_wins and P2_wins:
         raise InternalError('Two winners (there can be only one)')
 
-    if x_wins:
+    if P1_wins:
         return 'P1-WIN'
 
-    if o_wins:
+    if P2_wins:
         return 'P2-WIN'
-
-    if '-' not in board:
-        return 'TIE'
 
     if game_state == 'P1-NEXT':
         return 'P2-NEXT'
@@ -157,23 +201,16 @@ def _update_game_state(game_state, board):
     if game_state == 'P2-NEXT':
         return 'P1-NEXT'
 
-    if game_state in ('P1-WINS', 'P2-WINS', 'TIE'):
+    if game_state in ('P1-WINS', 'P2-WINS'):
         return game_state
 
     raise InternalError('Unhandled state: {}'.format(game_state))
 
-## MODIFY /!\
-def _is_win(board, letter):
-    wins = ((1, 2, 3), (4, 5, 6), (7, 8, 9),
-            (1, 4, 7), (2, 5, 8), (3, 6, 9),
-            (1, 5, 9), (3, 5, 7))
-
-    for win in wins:
-        if (board[win[0] - 1] == letter
-                and board[win[1] - 1] == letter
-                and board[win[2] - 1] == letter):
-            return True
-    return False
+def _is_win(id):
+    for k in BOAT_CASES[id]:
+        if k != 0:
+            return False
+    return True
 
 ## MODIFY BOARD LAYOUT /!\
 def _game_data_to_str(board, game_state, player1, player2, name):
@@ -184,11 +221,28 @@ def _game_data_to_str(board, game_state, player1, player2, name):
     out += "PLAYER 2: {}\n".format(player2[:6])
     out += "STATE: {}\n".format(game_state)
     out += "\n"
-    out += "{} | {} | {}\n".format(board[0], board[1], board[2])
-    out += "---|---|---\n"
-    out += "{} | {} | {}\n".format(board[3], board[4], board[5])
-    out += "---|---|---\n"
-    out += "{} | {} | {}".format(board[6], board[7], board[8])
+    out += "   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 "
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " A | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[0], board[1], board[2], board[3], board[4], board[5], board[6], board[7], board[8], board[9])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " B | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[10], board[11], board[12], board[13], board[14], board[15], board[16], board[17], board[18], board[19])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " C | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[20], board[21], board[22], board[23], board[24], board[25], board[26], board[27], board[28], board[29])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " D | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[30], board[31], board[32], board[33], board[34], board[35], board[36], board[37], board[38], board[39])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " E | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[40], board[41], board[42], board[43], board[44], board[45], board[46], board[47], board[48], board[49])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " F | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[50], board[51], board[52], board[53], board[54], board[55], board[56], board[57], board[58], board[59])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " G | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[60], board[61], board[62], board[63], board[64], board[65], board[66], board[67], board[68], board[69])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " H | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[70], board[71], board[72], board[73], board[74], board[75], board[76], board[77], board[78], board[79])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " I | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[80], board[81], board[82], board[83], board[84], board[85], board[86], board[87], board[88], board[89])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
+    out += " J | {} | {} | {} | {} | {} | {} | {} | {} | {} | {}".format(board[90], board[91], board[92], board[93], board[94], board[95], board[96], board[97], board[98], board[99])
+    out += "---|---|---|---|---|---|---|---|---|---|---"
     return out
 
 

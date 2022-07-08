@@ -19,20 +19,20 @@ class BattleshipPayload:
         if not action:
             raise InvalidTransaction('Action is required')
 
-        if action not in ('create', 'take', 'delete'):
+        if action not in ('create', 'shoot', 'delete'):
             raise InvalidTransaction('Invalid action: {}'.format(action))
 
-        if action == 'take':
+        if action == 'shoot':
             try:
-
+                ## modified: case name for position as an index 
                 if int(space) not in range(1, 10):
                     raise InvalidTransaction(
-                        "Space must be an integer from 1 to 9")
+                        "Space must be an integer from 0 to 99")
             except ValueError:
                 raise InvalidTransaction(
-                    'Space must be an integer from 1 to 9') from ValueError
+                    'Space must be an integer from 0 to 99') from ValueError
 
-        if action == 'take':
+        if action == 'shoot':
             space = int(space)
 
         self._name = name

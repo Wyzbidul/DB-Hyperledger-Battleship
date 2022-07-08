@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ![Hyperledger Sawtooth](https://raw.githubusercontent.com/hyperledger/sawtooth-core/master/images/sawtooth_logo_light_blue-small.png)
 
 # Hyperledger Sawtooth SDK
@@ -16,3 +17,8 @@ official Sawtooth documentation below:
   * [Hyperledger Sawtooth Official Documentation](https://sawtooth.hyperledger.org/docs/)
   * [Sawtooth Application Developer's Guide](https://sawtooth.hyperledger.org/docs/core/releases/latest/app_developers_guide.html)
   * [Sawtooth Python SDK Guide](https://sawtooth.hyperledger.org/docs/core/releases/latest/app_developers_guide/python_sdk.html)
+=======
+# DB-Hyperledger-Battleship
+
+Here is all the code for this project
+>>>>>>> a8bcfb8a849f732899760e752343bb1892616b3b

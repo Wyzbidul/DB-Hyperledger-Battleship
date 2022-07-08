@@ -1,0 +1,9 @@
+Check "error in test" for display board in cli
+Add plot boat on grid to handler and check transaction tree
+Change board layout in handler (_game_data_to_str)
+When player plays, update board, to modify on enemy board
+Check every file for logical error with changes made
+Import sawtooth_sdk folder because files are missing 
+handler.py add exceptions to raise if action == 'show'
+Add action "place" (handler.py, battleship_cli.py, battleship_payload.py)
+Add action "addplayer" (handler.py, battleship_cli.py, battleship_payload.py)
