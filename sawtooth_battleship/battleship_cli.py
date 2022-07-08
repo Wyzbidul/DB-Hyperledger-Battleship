@@ -380,10 +380,10 @@ def do_show(args):
         ## ERROR IN TEST only works when you can only display when it's your turn
         if game_state == 'P1-NEXT': 
             board_enemy = display_enemy(board_P2)
-            board_perso = board_P2
+            board_perso = board_P1
         else :
             board_enemy = display_enemy(board_P1)
-            board_perso = board_P1
+            board_perso = board_P2
 
         print("GAME:     : {}".format(name))
         print("PLAYER 1  : {}".format(player1[:6]))
