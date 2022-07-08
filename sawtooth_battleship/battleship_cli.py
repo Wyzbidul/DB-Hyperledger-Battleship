@@ -185,13 +185,25 @@ def add_show_parser(subparsers, parent_parser):
         help='specify password for authentication if REST API '
         'is using Basic Auth')
 
+def correct_space_row (string): 
+    row = string 
+    rowlist = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+    if row not in rowlist: 
+        raise argparse.ArgumentTypeError('Row has to be between A and J')
+    return row 
+    
+def correct_space_col (int): 
+    col = int 
+    if col < 0 or col > 10: 
+        raise argparse.ArgumentTypeError('Column has to be between 1 and 10')
+    return col 
 
-def add_take_parser(subparsers, parent_parser):
+def add_shoot_parser(subparsers, parent_parser):
     parser = subparsers.add_parser(
-        'take',
-        help='Takes a space in an battleship game',
-        description='Sends a transaction to take a square in the battleship game '
-        'with the identifier <name>. This transaction will fail if the '
+        'shoot',
+        help='Shoots a space in an battleship game',
+        description='Sends a transaction to shoot an enemy square in the '
+        'battleship game with the identifier <name>. This transaction will fail if the '
         'specified game does not exist.',
         parents=[parent_parser])
 
@@ -201,11 +213,16 @@ def add_take_parser(subparsers, parent_parser):
         help='identifier for the game')
 
     parser.add_argument(
-        'space',
-        type=int,
-        help='number of the square to take (A1-J10); the upper-left space is '
-        'A1, and the lower-right space is J10. It is a 10 by 10 grid '
-        '(1-10 and A-J coordinates)')
+        'row', 
+        type=correct_space_row, 
+        help='row of the square to shoot (A-J)'
+    )
+
+    parser.add_argument(
+        'col', 
+        type=correct_space_col, 
+        help='column of the square to shoot (1-10)'
+    )
 
     parser.add_argument(
         '--url',
@@ -239,7 +256,7 @@ def add_take_parser(subparsers, parent_parser):
         nargs='?',
         const=sys.maxsize,
         type=int,
-        help='set time, in seconds, to wait for take transaction '
+        help='set time, in seconds, to wait for shoot transaction '
         'to commit')
 
 
@@ -323,7 +340,7 @@ def create_parser(prog_name):
     add_create_parser(subparsers, parent_parser)
     add_list_parser(subparsers, parent_parser)
     add_show_parser(subparsers, parent_parser)
-    add_take_parser(subparsers, parent_parser)
+    add_shoot_parser(subparsers, parent_parser)
     add_delete_parser(subparsers, parent_parser)
 
     return parser
@@ -367,8 +384,8 @@ def do_show(args):
     if data is not None:
 
         board_str_P1, board_str_P2, game_state, player1, player2 = {
-            name: (board, state, player_1, player_2)
-            for name, board, state, player_1, player_2 in [
+            name: (board_P1, board_P2, state, player_1, player_2)
+            for name, board_P1, board_P2, state, player_1, player_2 in [
                 game.split(',')
                 for game in data.decode().split('|')
             ]
@@ -474,9 +491,25 @@ def do_create(args):
     print("Response: {}".format(response))
 
 
-def do_take(args):
+def do_shoot(args):
     name = args.name
-    space = args.space
+    column = args.col
+    row = args.row 
+
+    # Conversion of the COL ROW format to INT of the space 
+    rownames = {
+        "A": 0, 
+        "B": 1, 
+        "C": 2, 
+        "D": 3, 
+        "E": 4, 
+        "F": 5, 
+        "G": 6, 
+        "H": 7, 
+        "I": 8, 
+        "J": 9, 
+    }
+    space = rownames[row]*10+column 
 
     url = _get_url(args)
     keyfile = _get_keyfile(args)
@@ -485,12 +518,12 @@ def do_take(args):
     client = BattleshipClient(base_url=url, keyfile=keyfile)
 
     if args.wait and args.wait > 0:
-        response = client.take(
+        response = client.shoot(
             name, space, wait=args.wait,
             auth_user=auth_user,
             auth_password=auth_password)
     else:
-        response = client.take(
+        response = client.shoot(
             name, space,
             auth_user=auth_user,
             auth_password=auth_password)
@@ -560,8 +593,8 @@ def main(prog_name=os.path.basename(sys.argv[0]), args=None):
         do_list(args)
     elif args.command == 'show':
         do_show(args)
-    elif args.command == 'take':
-        do_take(args)
+    elif args.command == 'shoot':
+        do_shoot(args)
     elif args.command == 'delete':
         do_delete(args)
     else:
