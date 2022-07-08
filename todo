@@ -1,4 +1,5 @@
 Check "error in test" for display board in cli
+Add plot boat on grid to handler
 Change board layout in handler (_game_data_to_str)
 When player plays, update board, to modify on enemy board
 Modify battleship_payload.py to take in position differently
