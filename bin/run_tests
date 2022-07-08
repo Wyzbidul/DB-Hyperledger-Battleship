@@ -1,0 +1,162 @@
+#!/bin/bash
+#
+# Copyright 2017 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+
+# MODULE_LIST determines the order in which modules are run.
+# Quicker tests should run before slower ones.
+MODULE_LIST="
+    signing
+    python_sdk
+"
+
+usage() {
+    echo "Usage:"
+    echo "  $0 [-m Module] [-x Module] [-i Module]"
+    echo "  (-m, -x and -i can be passed multiple times)"
+    echo ""
+    echo "Options:"
+    echo "  -h          print usage and exit"
+    echo "  -m Module   only run tests of specified module"
+    echo "  -x Module   exclude the tests of specified module"
+    echo "  -i Module   include the tests of specified module"
+    echo ""
+    echo "Current modules: $MODULE_LIST"
+}
+
+# Exit on non-zero exit code from subcommand
+set -e
+# Set sawtooth-sdk-python project directory relative to this file
+PROJECT_DIR=$(cd $(dirname $(dirname $0)) && pwd)
+
+# Make sawtooth scripts accessible
+PATH=$PROJECT_DIR/bin:$PATH
+
+if [ ! -d "$PROJECT_DIR/coverage" ]; then
+  mkdir $PROJECT_DIR/coverage
+fi
+
+# Default args
+MODULES=""
+EXCLUDE=""
+INCLUDE=""
+
+while getopts i:x:m:h opt
+do
+    case $opt in
+        h)
+            usage
+            exit 0
+            ;;
+        m)
+            MODULES="$MODULES $OPTARG"
+            ;;
+        x)
+            EXCLUDE="$EXCLUDE $OPTARG"
+            ;;
+        i)
+            INCLUDE="$INCLUDE $OPTARG"
+            ;;
+
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            exit 2
+            ;;
+    esac
+done
+
+# If no '-m' flags are passed, run these modules
+if [[ $MODULES = "" ]]
+then
+    MODULES=$MODULE_LIST
+fi
+
+MODULES="$INCLUDE $MODULES"
+
+main() {
+
+# Start in project directory
+    cd $PROJECT_DIR
+
+    for module in $MODULES
+    do
+
+# Check if we are skipping this module
+        skip=0
+        for exclude in $EXCLUDE
+        do
+            if [[ $module == $exclude ]]
+            then
+                skip=1
+                break
+            fi
+        done
+
+        if [[ $skip == 1 ]]
+        then
+            echo "[---Skipping $module tests---]"
+        else
+            echo "[---Running $module tests---]"
+            case $module in
+                signing)
+                    test_signing
+                    ;;
+                python_sdk)
+                    test_python_sdk
+                    ;;
+                deployment)
+                    test_deployment
+                    ;;
+                *)
+                    echo "Module '$module' not found."
+                    ;;
+            esac
+        fi
+    done
+}
+
+test_signing() {
+    run_docker_test ./tests/unit_signing.yaml
+    copy_coverage .coverage.signing
+}
+
+test_python_sdk() {
+    run_docker_test ./tests/unit_python_sdk.yaml
+    copy_coverage .coverage.test_python_sdk
+    run_docker_test ./examples/intkey_python/tests/test_tp_intkey_python.yaml
+    copy_coverage .coverage.test_tp_intkey_python
+    run_docker_test ./examples/battleship_python/tests/test_tp_battleship_python.yaml
+    copy_coverage .coverage.test_tp_battleship_python
+    run_docker_test test_intkey_smoke_python
+    copy_coverage .coverage.test_intkey_smoke_python
+    run_docker_test test_workload
+    copy_coverage .coverage.workload
+    run_docker_test test_battleship_smoke_python
+    copy_coverage .coverage.test_battleship_smoke_python
+    run_docker_test test_two_families
+    copy_coverage .coverage.two_families
+    run_docker_test test_intkey_cli
+    copy_coverage .coverage.intkey_cli
+}
+
+test_deployment() {
+    run_docker_test test_systemd_services
+}
+
+copy_coverage() {
+    mv -f .coverage $PROJECT_DIR/coverage/$1
+}
+
+main
