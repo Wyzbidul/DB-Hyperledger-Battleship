@@ -378,7 +378,7 @@ def do_show(args):
         board_P2 = list(board_str_P2.replace("-", " "))
 
         ## ERROR IN TEST only works when you can only display when it's your turn
-        if game_state == 'P1-NEXT':
+        if game_state == 'P1-NEXT': 
             board_enemy = display_enemy(board_P2)
             board_perso = board_P2
         else :
