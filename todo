@@ -1,5 +1,8 @@
 Check "error in test" for display board in cli
+Add plot boat on grid to handler and check transaction tree
 Change board layout in handler (_game_data_to_str)
 When player plays, update board, to modify on enemy board
 Modify battleship_payload.py to take in position differently
 Check every file for logical error with changes made
+Import sawtooth_sdk folder because files are missing 
+Add an exception when the row and columns arguments are not correct 
