@@ -65,6 +65,13 @@ class BattleshipTransactionHandler(TransactionHandler):
 
             battleship_state.set_game(battleship_payload.name, game)
             _display("Player {} created a game.".format(signer[:6]))
+        
+        elif battleship_payload.action == 'show': 
+            game = battleship_state.get_game(battleship_payload.name)
+
+            if game.player1 == '' or game.player2 == '':
+                raise InvalidTransaction(
+                    'Invalid action: show requires two existing players')
 
         elif battleship_payload.action == 'shoot':
             game = battleship_state.get_game(battleship_payload.name)
@@ -74,7 +81,7 @@ class BattleshipTransactionHandler(TransactionHandler):
                     'Invalid action: shoot requires an existing game')
 
             ## ADAPT to battleship game state
-            if game.state in ('P1-WIN', 'P2-WIN', 'TIE'):
+            if game.state in ('P1-WIN', 'P2-WIN'):
                 raise InvalidTransaction('Invalid Action: Game has ended')
 
             if (game.player1 and game.state == 'P1-NEXT'

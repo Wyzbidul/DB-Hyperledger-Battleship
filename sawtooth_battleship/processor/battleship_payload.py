@@ -24,7 +24,7 @@ class BattleshipPayload:
 
         if action == 'shoot':
             try:
-                ## MODIFY: case name for position as an index 
+                ## modified: case name for position as an index 
                 if int(space) not in range(1, 10):
                     raise InvalidTransaction(
                         "Space must be an integer from 0 to 99")

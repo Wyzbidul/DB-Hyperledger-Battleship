@@ -395,12 +395,21 @@ def do_show(args):
         board_P2 = list(board_str_P2.replace("-", " "))
 
         ## ERROR IN TEST only works when you can only display when it's your turn
+        # battleship_state.set_game(battleship_payload.name, game)
+        # game = battleship_state.get_game(battleship_payload.name)
+        # if (game.player1 and game_state == 'P1-NEXT'
+        #         and game.player1 != signer) or \
+        #             (game.player2 and game.state == 'P2-NEXT'
+        #              and game.player2 != signer):
+        #         raise InvalidTransaction(
+        #             "Not this player's turn: {}".format(signer[:6]))
+
         if game_state == 'P1-NEXT':
             board_enemy = display_enemy(board_P2)
-            board_perso = board_P2
+            board_perso = board_P1
         else :
             board_enemy = display_enemy(board_P1)
-            board_perso = board_P1
+            board_perso = board_P2
 
         print("GAME:     : {}".format(name))
         print("PLAYER 1  : {}".format(player1[:6]))
