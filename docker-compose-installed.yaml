@@ -43,6 +43,20 @@ services:
     depends_on:
       - validator
     entrypoint: xo-tp-python -vv -C tcp://validator:4004
+    
+  battleship-tp-python:
+    build:
+      context: .
+      dockerfile: examples/battleship_python/Dockerfile-installed-${DISTRO}
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    image: sawtooth-battleship-tp-python:${ISOLATION_ID}
+    container_name: sawtooth-battleship-tp-python-default
+    depends_on:
+      - validator
+    entrypoint: battleship-tp-python -vv -C tcp://validator:4004
 
   python-sdk:
     build:
@@ -76,6 +90,17 @@ services:
         - no_proxy
     image: sawtooth-xo-tests:${ISOLATION_ID}
     container_name: sawtooth-xo-tests-default
+
+  battleship-tests:
+    build:
+      context: .
+      dockerfile: examples/battleship_python/Dockerfile-tests-installed
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    image: sawtooth-battleship-tests:${ISOLATION_ID}
+    container_name: sawtooth-battleship-tests-default
 
   settings-tp:
     image: hyperledger/sawtooth-settings-tp:nightly
