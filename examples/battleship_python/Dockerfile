@@ -50,8 +50,8 @@ ENV PATH=$PATH:/project/sawtooth-sdk-python/bin
 
 WORKDIR /project/sawtooth-sdk-python
 
-CMD echo "\033[0;32m--- Building xo-tp-python ---\n\033[0m" \
+CMD echo "\033[0;32m--- Building battleship-tp-python ---\n\033[0m" \
  && bin/protogen \
- && cd examples/xo_python \
+ && cd examples/battleship_python \
  && python3 setup.py clean --all \
  && python3 setup.py build
