@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.join(
     os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
     'examples', 'battleship_python'))
 
-from sawtooth_battleship.processor.main import main
+from examples.battleship_python.sawtooth_battleship.processor.main import main
 
 if __name__ == '__main__':
     main()
