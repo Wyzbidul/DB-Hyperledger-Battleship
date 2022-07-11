@@ -30,19 +30,6 @@ services:
       - validator
     entrypoint: intkey-tp-python -vv -C tcp://validator:4004
 
-  xo-tp-python:
-    build:
-      context: .
-      dockerfile: examples/xo_python/Dockerfile-installed-${DISTRO}
-      args:
-        - http_proxy
-        - https_proxy
-        - no_proxy
-    image: sawtooth-xo-tp-python:${ISOLATION_ID}
-    container_name: sawtooth-xo-tp-python-default
-    depends_on:
-      - validator
-    entrypoint: xo-tp-python -vv -C tcp://validator:4004
     
   battleship-tp-python:
     build:
@@ -80,16 +67,6 @@ services:
     image: sawtooth-intkey-tests:${ISOLATION_ID}
     container_name: sawtooth-intkey-tests-default
 
-  xo-tests:
-    build:
-      context: .
-      dockerfile: examples/xo_python/Dockerfile-tests-installed
-      args:
-        - http_proxy
-        - https_proxy
-        - no_proxy
-    image: sawtooth-xo-tests:${ISOLATION_ID}
-    container_name: sawtooth-xo-tests-default
 
   battleship-tests:
     build:
