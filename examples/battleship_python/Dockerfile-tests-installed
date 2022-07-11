@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# docker build -f examples/xo_python/Dockerfile-installed -t sawtooth-xo-tp-python .
+# docker build -f examples/battleship_python/Dockerfile-installed -t sawtooth-battleship-tp-python .
 
 # -------------=== python sdk build ===-------------
 
@@ -49,9 +49,9 @@ RUN /project/bin/protogen \
  && if [ -d "packaging/ubuntu" ]; then cp -R packaging/ubuntu/* debian/; fi \
  && dpkg-buildpackage -b -rfakeroot -us -uc
 
-# -------------=== python xo tests build ===-------------
+# -------------=== python battleship tests build ===-------------
 
-FROM ubuntu:bionic as python-xo-tests-builder
+FROM ubuntu:bionic as python-battleship-tests-builder
 
 RUN apt-get update \
  && apt-get install gnupg -y
@@ -79,7 +79,7 @@ COPY . /project
 RUN dpkg -i /tmp/python3-sawtooth-*.deb || true \
  && apt-get -f -y install \
  && /project/bin/protogen \
- && cd /project/examples/xo_python/ \
+ && cd /project/examples/battleship_python/ \
  && export ST_VERSION=$(../../bin/get_version) \
  && rm setup.py \
  && mv setup_tests.py setup.py \
@@ -89,7 +89,7 @@ RUN dpkg -i /tmp/python3-sawtooth-*.deb || true \
  && if [ -d "packaging/ubuntu" ]; then cp -R packaging/ubuntu/* debian/; fi \
  && dpkg-buildpackage -b -rfakeroot -us -uc
 
- # -------------=== python-xo-tp-tests docker build ===-------------
+ # -------------=== python-battleship-tp-tests docker build ===-------------
 FROM ubuntu:bionic
 
 RUN apt-get update \
@@ -97,7 +97,7 @@ RUN apt-get update \
 
 COPY --from=sawtooth-sdk-python-builder /python3-sawtooth-sdk*.deb /tmp
 
-COPY --from=python-xo-tests-builder /project/examples/python3-sawtooth-xo*.deb /tmp
+COPY --from=python-battleship-tests-builder /project/examples/python3-sawtooth-battleship*.deb /tmp
 
 RUN echo "deb http://repo.sawtooth.me/ubuntu/ci bionic universe" >> /etc/apt/sources.list \
  && (apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 8AA7AF1F1091A5FD \

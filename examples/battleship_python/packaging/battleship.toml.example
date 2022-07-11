@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------------
 
 #
-# Sawtooth -- XO Transaction Processor Configuration
+# Sawtooth -- Battleship Transaction Processor Configuration
 #
 
 # The url to connect to a running Validator

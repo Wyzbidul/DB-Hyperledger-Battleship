@@ -13,4 +13,16 @@
 # limitations under the License.
 # ------------------------------------------------------------------------------
 
-SAWTOOTH_XO_TP_PYTHON_ARGS=-v -C tcp://localhost:4004
+[Unit]
+Description=Sawtooth Battleship TP Python
+After=network.target
+
+[Service]
+User=sawtooth
+Group=sawtooth
+EnvironmentFile=-/etc/default/sawtooth-battleship-tp-python
+ExecStart=/usr/bin/battleship-tp-python $SAWTOOTH_BATTLESHIP_TP_PYTHON_ARGS
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
