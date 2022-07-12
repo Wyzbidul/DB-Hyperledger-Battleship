@@ -1,0 +1,2 @@
+class BattleshipException(Exception):
+    pass
