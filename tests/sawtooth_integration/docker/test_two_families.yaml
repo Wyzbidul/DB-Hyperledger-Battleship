@@ -44,22 +44,22 @@ services:
     command: intkey-tp-python -vv -C tcp://validator:4004
     stop_signal: SIGKILL
 
-  xo-tp-python:
+  battleship-tp-python:
     build:
       context: ../../..
-      dockerfile: ./examples/xo_python/Dockerfile
+      dockerfile: ./examples/battleship_python/Dockerfile
       args:
         - http_proxy
         - https_proxy
         - no_proxy
-    image: sawtooth-xo-tp-python$INSTALL_TYPE:$ISOLATION_ID
+    image: sawtooth-battleship-tp-python$INSTALL_TYPE:$ISOLATION_ID
     volumes:
       - $SAWTOOTH_SDK_PYTHON:/project/sawtooth-sdk-python
     expose:
       - 4004
     depends_on:
       - validator
-    command: xo-tp-python -vv -C tcp://validator:4004
+    command: battleship-tp-python -vv -C tcp://validator:4004
     stop_signal: SIGKILL
 
   validator:

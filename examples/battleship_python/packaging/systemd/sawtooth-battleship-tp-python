@@ -13,16 +13,4 @@
 # limitations under the License.
 # ------------------------------------------------------------------------------
 
-[Unit]
-Description=Sawtooth XO TP Python
-After=network.target
-
-[Service]
-User=sawtooth
-Group=sawtooth
-EnvironmentFile=-/etc/default/sawtooth-xo-tp-python
-ExecStart=/usr/bin/xo-tp-python $SAWTOOTH_XO_TP_PYTHON_ARGS
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
+SAWTOOTH_BATTLESHIP_TP_PYTHON_ARGS=-v -C tcp://localhost:4004
