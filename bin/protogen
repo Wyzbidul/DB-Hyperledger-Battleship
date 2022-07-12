@@ -24,7 +24,7 @@ import sys
 
 
 try:
-    from grpc.tools.protoc import main as _protoc
+    from grpc_tools.protoc import main as _protoc
 except ImportError:
     print("Error: grpc.tools.protoc not found")
     exit(1)
