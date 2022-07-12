@@ -32,6 +32,8 @@
 
 /examples/xo_python/build/
 /examples/xo_python/**/__pycache__/
+/examples/battleship_python/build/
+/examples/battleship_python/**/__pycache__/
 /examples/intkey_python/build/
 /examples/intkey_python/**/__pycache__/
 /examples/noop_python/**/__pycache__/
